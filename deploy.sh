@@ -9,7 +9,27 @@ if [ ! -d "$SOURCE_DIR" ]; then
   exit 1
 fi
 
-REPO=$(git config remote.origin.url)
+# Convert https repository to ssh
+REPO_URL=$(git config remote.origin.url)
+TEST_HTTPS=`echo $REPO_URL | sed -Ene's#.*(https://[^[:space:]]*).*#\1#p'`
+if [ -z "$TEST_HTTPS" ]; then
+  echo "-- ERROR:  Could not identify Repo url."
+  echo "   It is possible this repo is already using SSH instead of HTTPS."
+else
+  USER=`echo $REPO_URL | sed -Ene's#https://github.com/([^/]*)/(.*).git#\1#p'`
+  if [ -z "$USER" ]; then
+    echo "-- ERROR:  Could not identify User."
+    exit 1
+  fi
+
+  REPO=`echo $REPO_URL | sed -Ene's#https://github.com/([^/]*)/(.*).git#\2#p'`
+  if [ -z "$REPO" ]; then
+    echo "-- ERROR:  Could not identify Repo."
+    exit 1
+  fi
+
+  REPO_URL="git@github.com:$USER/$REPO.git"
+fi
 
 if [ -n "$TRAVIS_BUILD_ID" ]; then
   # When running on Travis we need to use SSH to deploy to GitHub
@@ -42,15 +62,12 @@ if [ -n "$TRAVIS_BUILD_ID" ]; then
       ENCRYPTED_IV_VAR=encrypted_${ENCRYPTION_LABEL}_iv
       ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
       ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
-      echo REPO: $REPO
-      REPO=${REPO/git:\/\/github.com\//git@github.com:}
-      echo new REPO: $REPO
       
       # The `deploy_key.enc` file should have been added to the repo and should
       # have been created from the deploy private key using `travis encrypt-file`
       openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy_key.enc -out deploy_key -d
 
-      openssl aes-256-cbc -K $encrypted_d6a76f5bfedb_key -iv $encrypted_d6a76f5bfedb_iv -in deploy_key.enc -out deploy_key -d
+      #openssl aes-256-cbc -K $encrypted_d6a76f5bfedb_key -iv $encrypted_d6a76f5bfedb_iv -in deploy_key.enc -out deploy_key -d
       
       chmod 600 deploy_key
       eval `ssh-agent -s`
@@ -61,14 +78,12 @@ if [ -n "$TRAVIS_BUILD_ID" ]; then
   fi
 fi
 
-REPO_NAME=$(basename $REPO)
-TARGET_DIR=$(mktemp -d /tmp/$REPO_NAME.XXXX)
+TARGET_DIR=$(mktemp -d /tmp/$REPO.XXXX)
 REV=$(git rev-parse HEAD)
-git clone --branch ${TARGET_BRANCH} ${REPO} ${TARGET_DIR}
+git clone --branch ${TARGET_BRANCH} ${REPO_URL} ${TARGET_DIR}
 rsync -rt --delete --exclude=".git" --exclude=".nojekyll" --exclude=".travis.yml" $SOURCE_DIR/ $TARGET_DIR/
 cd $TARGET_DIR
 git add -A .
 git commit --allow-empty -m "Built from commit $REV"
-echo "Push command : git push $REPO $TARGET_BRANCH"
-REPO="git@github.com:pabryan/project-template.git"
-git push $REPO $TARGET_BRANCH
+echo "Push command : git push $REPO_URL $TARGET_BRANCH"
+git push $REPO_URL $TARGET_BRANCH
