@@ -1,0 +1,5 @@
+# Set up the `master` branch so that Travis-CI
+# doesn't try to build it
+branches:
+  except:
+    - gh-pages
