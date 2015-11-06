@@ -43,7 +43,7 @@ if [ -n "$TRAVIS_BUILD_ID" ]; then
       ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
       ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
       echo REPO: $REPO
-      REPO=${REPO/git:\/\/github.com\//git@github.com:
+      REPO=${REPO/git:\/\/github.com\//git@github.com:}
       echo new REPO: $REPO
       
       # The `deploy_key.enc` file should have been added to the repo and should
