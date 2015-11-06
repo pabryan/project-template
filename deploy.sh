@@ -70,4 +70,5 @@ cd $TARGET_DIR
 git add -A .
 git commit --allow-empty -m "Built from commit $REV"
 echo "Push command : git push $REPO $TARGET_BRANCH"
+REPO="git@github.com:pabryan/project-template.git"
 git push $REPO $TARGET_BRANCH
