@@ -9,7 +9,7 @@ after_success:
 
 env:
   global:
-    - SOURCE_DIR="_build"
+    - BUILD_DIR="_build"
     - ENCRYPTION_LABEL="d6a76f5bfedb"
     - GIT_NAME="Paul Bryan"
     - GIT_EMAIL="pabryan@gmail.com"

@@ -1,4 +1,5 @@
 #!/bin/bash
 
-mkdir _build
-cp ./index.html ./_build/
+# Set up build directory
+mkdir "${BUILD_DIR}"
+cp ./index.html ./"${BUILD_DIR}"
