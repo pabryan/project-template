@@ -67,4 +67,5 @@ rsync -rt --delete --exclude=".git" --exclude=".nojekyll" --exclude=".travis.yml
 cd $TARGET_DIR
 git add -A .
 git commit --allow-empty -m "Built from commit $REV"
+echo "Push command : git push $REPO $TARGET_BRANCH"
 git push $REPO $TARGET_BRANCH
