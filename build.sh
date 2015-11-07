@@ -13,10 +13,10 @@ dpkg -L texlive-binaries | grep kpsewhich
 echo "***** Where do we find .sty files?"
 kpsewhich -show-path .sty
 
-echo "***** Do we have biblatex.sty?"
-dpkg -L texlive-bibtex-extra | grep biblatex.sty
+echo "***** What files does texlive-bibtex-extra contain? Where is biblatex.sty?"
+dpkg -L texlive-bibtex-extra 
 
-echo "***** Try find it system wise?"
+echo "***** Try find biblatex system wise?"
 find /usr/share/texlive/texmf-dist/tex/latex -iname 'biblatex*'
 
 kpsewhich biblatex.sty
