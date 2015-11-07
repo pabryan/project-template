@@ -1,5 +1,5 @@
 $pdflatex="pdflatex -interaction=nonstopmode %O %S";
-$out_dir = $ENV{'BUILD_DIR'};
+$out_dir = $ENV{'LATEX_BUILD_DIR'};
 $aux_dir = '.';
 $pdf_mode = 1;
 $dvi_mode = $postscript_mode = 0;
