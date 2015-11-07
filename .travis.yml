@@ -9,10 +9,11 @@ after_success:
 
 env:
   global:
-    - BUILD_DIR="_build"
-    - LATEX_BUILD_DIR="_latexbuild"
+    - DEPLOY_DIR="_deploy"
+    - BUILD_DIR="." # Somewhere to build files so we don't pollute deploy directory with auxillary build files. Needs a more modern latexmk to work properly though! Just set to . for now.
     - ENCRYPTION_LABEL="d6a76f5bfedb"
     - GIT_NAME="Paul Bryan"
     - GIT_EMAIL="pabryan@gmail.com"
     - SOURCE_BRANCH="master"
     - TARGET_BRANCH="gh-pages"
+    - TEX_SOURCES="main.tex" # colon seperated list of files, e.g. "file1.tex:file2.tex:file3.tex"

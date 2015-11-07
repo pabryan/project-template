@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# We expect the build directory to contain the desired gh-pages contents
-if [ ! -d "$BUILD_DIR" ]; then
-  echo "BUILD_DIR ($BUILD_DIR) does not exist, build the source directory before deploying"
+# We expect the deploy directory to contain the desired gh-pages contents
+if [ ! -d "$DEPLOY_DIR" ]; then
+  echo "DEPLOY_DIR ($DEPLOY_DIR) does not exist, build the source directory before deploying"
   exit 1
 fi
 
@@ -80,7 +80,7 @@ TARGET_DIR=$(mktemp -d /tmp/$REPO.XXXX)
 REV=$(git rev-parse HEAD)
 
 git clone --branch ${TARGET_BRANCH} ${REPO_URL} ${TARGET_DIR}
-rsync -rt --delete --exclude=".git" --exclude=".nojekyll" --exclude=".travis.yml" $BUILD_DIR/ $TARGET_DIR/
+rsync -rt --delete --exclude=".git" --exclude=".nojekyll" --exclude=".travis.yml" $DEPLOY_DIR/ $TARGET_DIR/
 cd $TARGET_DIR
 git add -A .
 git commit --allow-empty -m "Built from commit $REV"
